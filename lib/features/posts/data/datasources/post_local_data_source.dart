@@ -1,21 +1,43 @@
+import 'dart:convert';
+
+import 'package:dartz/dartz.dart';
+import 'package:posts_clean_architecture/core/error/exception.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:posts_clean_architecture/features/posts/data/models/post_model.dart';
 
 abstract class PostLocalDataSource {
   Future<List<PostModel>> getCachedPosts();
 
-  Future cachePosts(List<PostModel> postModel);
+  Future<Unit> cachePosts(List<PostModel> postModel);
 }
 
-class PostLocalDataSourceImpl implements PostLocalDataSource{
+const cachePostKey = "CACHED_POSTS";
+
+class PostLocalDataSourceImpl implements PostLocalDataSource {
+  final SharedPreferences _sharedPreference;
+
+  PostLocalDataSourceImpl(this._sharedPreference);
+
   @override
-  Future cachePosts(List<PostModel> postModel) {
-    // TODO: implement cachePosts
-    throw UnimplementedError();
+  Future<Unit> cachePosts(List<PostModel> postModel) async {
+    List postModelsToJson =
+        postModel.map<Map<String, dynamic>>((posts) => posts.toJson()).toList();
+    await _sharedPreference.setString(
+        cachePostKey, json.encode(postModelsToJson));
+    return Future.value(unit);
   }
 
   @override
   Future<List<PostModel>> getCachedPosts() {
-    // TODO: implement getCachedPosts
-    throw UnimplementedError();
+    final jsonString = _sharedPreference.getString(cachePostKey);
+    if (jsonString != null) {
+      List decodeJsonData = json.decode(jsonString);
+      List<PostModel> jsonToPostModel = decodeJsonData
+          .map<PostModel>((jsonPostModel) => PostModel.fromJson(jsonPostModel))
+          .toList();
+      return Future.value(jsonToPostModel);
+    } else {
+      throw EmptyCacheException();
+    }
   }
 }
