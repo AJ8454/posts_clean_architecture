@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:posts_clean_architecture/core/widgets/loading_widget.dart';
 import 'package:posts_clean_architecture/features/posts/presentation/bloc/posts_bloc/posts_bloc.dart';
-import 'package:posts_clean_architecture/features/posts/presentation/widgets/message_display_widget.dart';
-import 'package:posts_clean_architecture/features/posts/presentation/widgets/post_list_widget.dart';
+import 'package:posts_clean_architecture/features/posts/presentation/pages/post_add_update_page.dart';
+import 'package:posts_clean_architecture/features/posts/presentation/widgets/posts_page/message_display_widget.dart';
+import 'package:posts_clean_architecture/features/posts/presentation/widgets/posts_page/post_list_widget.dart';
 
 class PostsPage extends StatelessWidget {
   const PostsPage({super.key});
@@ -13,7 +14,7 @@ class PostsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("Posts")),
       body: _buildBody(),
-      floatingActionButton: _buildFloatingBtn(),
+      floatingActionButton: _buildFloatingBtn(context),
     );
   }
 
@@ -43,9 +44,15 @@ class PostsPage extends StatelessWidget {
     BlocProvider.of<PostsBloc>(context).add(RefreshPostsEvent());
   }
 
-  Widget _buildFloatingBtn() {
+  Widget _buildFloatingBtn(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const PostAddUpdatePage(isUpdatePost: false),
+          ),
+        );
+      },
       child: const Icon(Icons.add),
     );
   }
