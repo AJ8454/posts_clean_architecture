@@ -14,22 +14,22 @@ abstract class PostLocalDataSource {
 const cachePostKey = "CACHED_POSTS";
 
 class PostLocalDataSourceImpl implements PostLocalDataSource {
-  final SharedPreferences _sharedPreference;
+  final SharedPreferences sharedPreference;
 
-  PostLocalDataSourceImpl(this._sharedPreference);
+  PostLocalDataSourceImpl({required this.sharedPreference});
 
   @override
   Future<Unit> cachePosts(List<PostModel> postModel) async {
     List postModelsToJson =
         postModel.map<Map<String, dynamic>>((posts) => posts.toJson()).toList();
-    await _sharedPreference.setString(
+    await sharedPreference.setString(
         cachePostKey, json.encode(postModelsToJson));
     return Future.value(unit);
   }
 
   @override
   Future<List<PostModel>> getCachedPosts() {
-    final jsonString = _sharedPreference.getString(cachePostKey);
+    final jsonString = sharedPreference.getString(cachePostKey);
     if (jsonString != null) {
       List decodeJsonData = json.decode(jsonString);
       List<PostModel> jsonToPostModel = decodeJsonData

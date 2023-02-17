@@ -9,14 +9,15 @@ import 'package:posts_clean_architecture/features/posts/data/models/post_model.d
 import 'package:posts_clean_architecture/features/posts/domain/entites/post.dart';
 import 'package:posts_clean_architecture/features/posts/domain/repositories/post_repo.dart';
 
-
 class PostsRepositoryImpl implements PostRepository {
   final PostRemoteDataSource remoteDataSource;
   final PostLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
 
   PostsRepositoryImpl(
-      this.remoteDataSource, this.localDataSource, this.networkInfo);
+      {required this.remoteDataSource,
+      required this.localDataSource,
+      required this.networkInfo});
 
   @override
   Future<Either<Failure, List<Post>>> getAllPosts() async {
