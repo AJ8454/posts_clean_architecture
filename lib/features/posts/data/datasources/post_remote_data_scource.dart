@@ -47,7 +47,7 @@ class PostRemoteDataSourceImpl implements PostRemoteDataSource {
     final response =
         await client.post(Uri.parse("$baseUrl/posts/"), body: body);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return Future.value(unit);
     } else {
       throw ServerException();
